@@ -6,9 +6,9 @@
  */
 
 // Configuration
-const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0'; // ID correto da planilha
+const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0';
 const SHEET_NAME = 'Whitelist';
-const SHEET_RANGE = 'A1:C'; // Range A2:C will get columns for address, tier, and notes
+const SHEET_RANGE = 'A:B'; // Changed to only get columns A and B
 
 /**
  * Fetch the whitelist data from Google Sheet
@@ -67,32 +67,32 @@ async function fetchWhitelistData() {
  */
 function processWhitelistData(rawData) {
     try {
-        // Extract the rows from the response
         const rows = rawData.table.rows;
-
-        // Create an array to store the processed entries
         const entries = [];
 
-        // Process each row
         rows.forEach(row => {
-            // Skip rows with no cells (empty rows)
             if (!row.c || row.c.length === 0) return;
 
-            // Extract the data from each cell
-            const address = row.c[0] ? (row.c[0].v || '').toString().toLowerCase() : '';
-            const tier = row.c[1] ? (row.c[1].v || '') : '';
-            const notes = row.c[2] ? (row.c[2].v || '') : '';
-
-            // Skip rows with empty addresses
+            // Column B contains the wallet address
+            const address = row.c[1] ? (row.c[1].v || '').toString().toLowerCase() : '';
+            // Column A contains the tier (ThoonG)
+            const tier = row.c[0] ? (row.c[0].v || '') : '';
+            
+            // Skip empty addresses
             if (!address) return;
 
-            // Add the entry to the array
+            // Add debug logging
+            console.log(`Processing row - Tier: ${tier}, Address: ${address}`);
+
             entries.push({
                 address,
                 tier,
-                notes
+                notes: '' // You can add notes later if needed
             });
         });
+
+        // Debug - log some sample entries
+        console.log('Sample processed entries:', entries.slice(0, 3));
 
         return entries;
     } catch (error) {
@@ -246,4 +246,19 @@ document.addEventListener('DOMContentLoaded', () => {
 const testWallet = "0x..."; // Coloque aqui uma wallet que você sabe que está na planilha
 checkWhitelistStatus(testWallet).then(result => {
     console.log('TEST: Wallet status:', result);
+});
+
+// Add this at the end of the file
+async function testWithKnownAddress() {
+    // Replace with an address you know is in your sheet
+    const testAddress = "0x7C8F39f35Ba890Be972D2CcABab0e3Dc99A82001";
+    
+    console.log('Testing with known address:', testAddress);
+    const result = await checkWhitelistStatus(testAddress);
+    console.log('Test result:', result);
+}
+
+// Run the test when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    testWithKnownAddress();
 });
