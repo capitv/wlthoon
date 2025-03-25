@@ -355,61 +355,49 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 let cachedWhitelistData = null;
 let lastFetchTime = 0;
 
-/**
- * Fetch whitelist data from Google Sheets
- */
+// Get whitelist data with caching
+async function getWhitelistData() {
+    const now = Date.now();
+    if (cachedWhitelistData && (now - lastFetchTime < CACHE_DURATION)) {
+        return cachedWhitelistData;
+    }
+    return await fetchWhitelistData();
+}
+
+// Fetch data from Google Sheets
 async function fetchWhitelistData() {
     try {
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${SHEET_RANGE}`;
-        console.log('Connecting to:', url);
-        
         const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`API error! status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`API error! status: ${response.status}`);
+        
         const text = await response.text();
-        console.log('DEBUG: Raw response:', text.substring(0, 200) + '...'); 
-
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
         const jsonText = text.substring(jsonStart, jsonEnd);
         const data = JSON.parse(jsonText);
         
-        const processedData = processWhitelistData(data);
-        console.log('DEBUG: Processed addresses:', processedData.map(entry => entry.address).slice(0, 5));
-        console.log(`DEBUG: Loaded ${processedData.length} wallet addresses from Google Sheets`);
-
-        return processedData;
+        return processWhitelistData(data);
     } catch (error) {
-        console.error('Error in fetchWhitelistData:', error);
+        console.error('Error fetching whitelist data:', error);
         return null;
     }
 }
 
-/**
- * Process the raw data from Google Sheets
- */
+// Process whitelist data
 function processWhitelistData(data) {
     try {
-        const rows = data.table.rows;
         const entries = [];
-
-        rows.forEach(row => {
+        data.table.rows.forEach(row => {
             if (!row.c || row.c.length === 0) return;
             
             const address = row.c[1] ? (row.c[1].v || '').toString().toLowerCase() : '';
             const tier = row.c[0] ? (row.c[0].v || '') : '';
             
-            if (!address) return;
-            
-            entries.push({
-                address,
-                tier,
-                notes: ''
-            });
+            if (address) {
+                entries.push({ address, tier, notes: '' });
+            }
         });
-
         return entries;
     } catch (error) {
         console.error('Error processing whitelist data:', error);
@@ -417,16 +405,14 @@ function processWhitelistData(data) {
     }
 }
 
-/**
- * Check whitelist status for an address
- */
-async function checkWhitelistStatus(address, preloadedData = null) {
+// Check whitelist status
+async function checkWhitelistStatus(address) {
     try {
         const normalizedAddress = address.toLowerCase();
-        const data = preloadedData || await getWhitelistData();
+        const data = await getWhitelistData();
         
         if (!data) {
-            throw new Error('Failed to fetch whitelist data');
+            return getDemoWhitelistStatus(address);
         }
 
         const entry = data.find(e => e.address === normalizedAddress);
@@ -441,9 +427,7 @@ async function checkWhitelistStatus(address, preloadedData = null) {
     }
 }
 
-/**
- * Get demo whitelist status
- */
+// Demo whitelist status
 function getDemoWhitelistStatus(address) {
     const normalizedAddress = address.toLowerCase();
     const testAddresses = [
@@ -467,7 +451,7 @@ function getDemoWhitelistStatus(address) {
     };
 }
 
-// Make functions globally available
+// Test function
 window.testWithKnownAddress = async function() {
     const testAddresses = [
         "0x7C8F39f35Ba890Be972D2CcABab0e3Dc99A82001",
@@ -476,7 +460,6 @@ window.testWithKnownAddress = async function() {
     ];
     
     console.log('Starting whitelist tests...');
-    
     for (const address of testAddresses) {
         console.log('\nTesting address:', address);
         const result = await checkWhitelistStatus(address);
@@ -484,7 +467,17 @@ window.testWithKnownAddress = async function() {
     }
 }
 
+// Make functions globally available
+window.checkWhitelistStatus = checkWhitelistStatus;
+window.getDemoWhitelistStatus = getDemoWhitelistStatus;
+window.getWhitelistData = getWhitelistData;
+
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', async () => {
-    await preloadWhitelistData();
+    try {
+        await getWhitelistData();
+        console.log('Whitelist data preloaded successfully');
+    } catch (error) {
+        console.error('Failed to preload whitelist data:', error);
+    }
 });
