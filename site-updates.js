@@ -61,7 +61,7 @@ function setupRandomGallery() {
 
   // Create array of image paths - Using the new gallery images
   const imagePaths = [
-    './gallery/bear1.gif',
+    './gallery/Bear1.gif',
     './gallery/bear2.png',
     './gallery/bear3.png',
     './gallery/bear4.png',
