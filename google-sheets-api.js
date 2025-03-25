@@ -250,15 +250,29 @@ checkWhitelistStatus(testWallet).then(result => {
 
 // Add this at the end of the file
 async function testWithKnownAddress() {
-    // Replace with an address you know is in your sheet
-    const testAddress = "0x7C8F39f35Ba890Be972D2CcABab0e3Dc99A82001";
+    // Adicione mais endereços de teste
+    const testAddresses = [
+        "0x7C8F39f35Ba890Be972D2CcABab0e3Dc99A82001",
+        "0x17A86E823f48026cB3ee74674F7ec9bA99567aB3",
+        "0xDAd6708957d14f4B1A50fe2286B6743C3aD4d015"
+    ];
     
-    console.log('Testing with known address:', testAddress);
-    const result = await checkWhitelistStatus(testAddress);
-    console.log('Test result:', result);
+    console.log('Starting whitelist tests...');
+    
+    for (const address of testAddresses) {
+        console.log('\nTesting address:', address);
+        const result = await checkWhitelistStatus(address);
+        console.log('Result:', result);
+    }
 }
 
-// Run the test when the page loads
+// Executar o teste automaticamente quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Running whitelist tests...');
     testWithKnownAddress();
 });
+
+// filepath: c:\Users\eduar\Downloads\berathoon_site\index.html
+<button onclick="testWithKnownAddress()" class="test-button">
+  Test Whitelist
+</button>
