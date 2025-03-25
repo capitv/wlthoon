@@ -59,15 +59,6 @@ function setupRandomGallery() {
   // Clear existing gallery
   gallery.innerHTML = '';
 
-  // Create array of image paths - Using the new gallery images
-  const imagePaths = [
-    './gallery/Bear1.gif',
-    './gallery/bear2.png',
-    './gallery/bear3.png',
-    './gallery/bear4.png',
-    './gallery/bear5.png',
-    './gallery/bear6.png'
-  ];
 
   // Shuffle the array
   for (let i = imagePaths.length - 1; i > 0; i--) {
