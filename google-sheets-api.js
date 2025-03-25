@@ -8,7 +8,7 @@
 // Configuration
 const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0'; // The ID from the URL of your Google Sheet
 const SHEET_NAME = 'Whitelist'; // The name of the sheet tab containing whitelist data
-const SHEET_RANGE = 'A2:C'; // Range A2:C will get columns for address, tier, and notes
+const SHEET_RANGE = 'A1:C'; // Range A2:C will get columns for address, tier, and notes
 
 /**
  * Fetch the whitelist data from Google Sheet
@@ -147,7 +147,8 @@ async function checkWhitelistStatus(address, whitelistData = null) {
 // Cache for whitelist data
 let cachedWhitelistData = null;
 let lastFetchTime = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+// Altere para 30 segundos, por exemplo
+const CACHE_DURATION = 30 * 1000; // 30 segundos em millisegundos
 
 /**
  * Get the whitelist data, using cache if available
