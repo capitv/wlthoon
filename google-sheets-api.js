@@ -6,8 +6,8 @@
  */
 
 // Configuration
-const SHEET_ID = '2PACX-1vThFwRH5ueJ5Cb6KYetKAtSKjAXtx4IT8LEOTgS-DenODItknsgCet7OvnXrGoi8whBM2C9WLTFMHwU'; // The ID from the URL of your Google Sheet
-const SHEET_NAME = 'Whitelist'; // The name of the sheet tab containing whitelist data
+const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0'; // ID correto da planilha
+const SHEET_NAME = 'Whitelist';
 const SHEET_RANGE = 'A1:C'; // Range A2:C will get columns for address, tier, and notes
 
 /**
@@ -213,6 +213,34 @@ function getDemoWhitelistStatus(address) {
         };
     }
 }
+
+// Adicione esta função de teste
+async function testSheetConnection() {
+    try {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${SHEET_RANGE}`;
+        console.log('Testing connection to:', url);
+        
+        const response = await fetch(url);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        console.log('First 100 characters of response:', text.substring(0, 100));
+        
+        return true;
+    } catch (error) {
+        console.error('Connection test failed:', error);
+        return false;
+    }
+}
+
+// Teste a conexão ao carregar a página
+document.addEventListener('DOMContentLoaded', () => {
+    testSheetConnection();
+});
 
 // Adicione isto temporariamente ao final do arquivo para testar
 const testWallet = "0x..."; // Coloque aqui uma wallet que você sabe que está na planilha
