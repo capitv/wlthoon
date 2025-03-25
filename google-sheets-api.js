@@ -6,7 +6,7 @@
  */
 
 // Configuration
-const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0'; // The ID from the URL of your Google Sheet
+const SHEET_ID = '2PACX-1vThFwRH5ueJ5Cb6KYetKAtSKjAXtx4IT8LEOTgS-DenODItknsgCet7OvnXrGoi8whBM2C9WLTFMHwU'; // The ID from the URL of your Google Sheet
 const SHEET_NAME = 'Whitelist'; // The name of the sheet tab containing whitelist data
 const SHEET_RANGE = 'A1:C'; // Range A2:C will get columns for address, tier, and notes
 
@@ -20,9 +20,12 @@ async function fetchWhitelistData() {
     try {
         // Create the URL for the published JSON feed of the sheet
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${SHEET_RANGE}`;
+        
+        console.log('DEBUG: Fetching data from URL:', url);
 
         // Fetch the data
         const response = await fetch(url);
+        console.log('DEBUG: Response status:', response.status);
 
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -30,24 +33,27 @@ async function fetchWhitelistData() {
 
         // Get the text response
         const text = await response.text();
+        console.log('DEBUG: Raw response:', text.substring(0, 200) + '...'); // Show first 200 chars
 
-        // Extract the JSON part from the response (Google's response is not pure JSON)
+        // Extract the JSON part
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}') + 1;
         const jsonText = text.substring(jsonStart, jsonEnd);
 
         // Parse the JSON
         const data = JSON.parse(jsonText);
+        console.log('DEBUG: Parsed data:', data);
 
-        // Process the data into a more usable format
+        // Process the data
         const processedData = processWhitelistData(data);
+        console.log('DEBUG: Processed addresses:', processedData.map(entry => entry.address).slice(0, 5));
 
         // Debug - mostrar quantas wallets foram carregadas
         console.log(`DEBUG: Loaded ${processedData.length} wallet addresses from Google Sheets`);
 
         return processedData;
     } catch (error) {
-        console.error('Error fetching whitelist data:', error);
+        console.error('Error in fetchWhitelistData:', error);
         // Return null to indicate an error occurred
         return null;
     }
