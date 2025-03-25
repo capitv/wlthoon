@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateMintDate() {
   const mintDateLabel = document.querySelector('.mint-date-label');
   if (mintDateLabel) {
-    mintDateLabel.textContent = 'Target date: April 9, 2025 - 12:00 UTC';
+    mintDateLabel.textContent = 'Early April';
   }
 
   // Update countdown timer target date
@@ -61,12 +61,12 @@ function setupRandomGallery() {
 
   // Create array of image paths - Using the new gallery images
   const imagePaths = [
-    'gallery/bear1.jpg',
-    'gallery/bear2.jpg',
-    'gallery/bear3.jpg',
-    'gallery/bear4.jpg',
-    'gallery/bear5.jpg',
-    'gallery/bear6.jpg'
+    './gallery/bear1.png',
+    './gallery/bear2.png',
+    './gallery/bear3.png',
+    './gallery/bear4.png',
+    './gallery/bear5.png',
+    './gallery/bear6.png'
   ];
 
   // Shuffle the array
