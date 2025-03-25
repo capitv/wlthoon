@@ -213,3 +213,9 @@ function getDemoWhitelistStatus(address) {
         };
     }
 }
+
+// Adicione isto temporariamente ao final do arquivo para testar
+const testWallet = "0x..."; // Coloque aqui uma wallet que você sabe que está na planilha
+checkWhitelistStatus(testWallet).then(result => {
+    console.log('TEST: Wallet status:', result);
+});
