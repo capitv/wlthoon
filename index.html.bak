@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="header-fix.js"></script>
+    <script src="site-updates.js"></script>
+</head>
+<body>
+    // ... existing code ... <logo styles>
+
+    <style>
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-color {
+            opacity: 0; /* Changed to hide the logo color */
+        }
+
+        .logo-white {
+            position: absolute;
+            opacity: 1; /* Changed to show the logo white */
+        }
+
+        header.scrolled .logo-color {
+            opacity: 0;
+        }
+
+        header.scrolled .logo-white {
+            opacity: 1;
+        }
+    </style>
+
+    // ... existing code ... <header HTML>
+
+    <header id="mainHeader">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="berathoon-logo.png" alt="Berathoon Logo" class="logo-color">
+                <img src="berathoon-logo-white.png" alt="Berathoon Logo" class="logo-white">
+            </div>
+            <button class="menu-toggle" id="menuToggle" style="display: none;">☰</button>
+            <div class="nav-links" id="navLinks">
+                <!-- rest of the header content -->
+            </div>
+        </div>
+    </header>
+
+    // ... existing code ...
+</body>
+</html>
