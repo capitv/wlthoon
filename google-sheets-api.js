@@ -59,7 +59,7 @@ function processWhitelistData(data) {
 }
 
 // Check whitelist status
-async function checkWhitelistStatus(address, originElement) {
+async function checkWhitelistStatus(address) {
     try {
         const normalizedAddress = address.toLowerCase();
         const data = await getWhitelistData();
@@ -75,19 +75,12 @@ async function checkWhitelistStatus(address, originElement) {
             notes: entry?.notes || null
         };
 
-        if (result.isWhitelisted && originElement) {
-            // Get the bounding rectangle of the origin element
-            const rect = originElement.getBoundingClientRect();
-            const origin = {
-                x: (rect.left + rect.right) / 2 / window.innerWidth,
-                y: (rect.top + rect.bottom) / 2 / window.innerHeight
-            };
-
-            // Trigger confetti effect at the origin element
+        if (result.isWhitelisted) {
+            // Trigger confetti effect
             confetti({
                 particleCount: 100,
                 spread: 70,
-                origin: origin
+                origin: { y: 0.6 }
             });
         }
 
@@ -150,25 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
 window.checkWhitelistStatus = checkWhitelistStatus;
 window.getDemoWhitelistStatus = getDemoWhitelistStatus;
 window.getWhitelistData = getWhitelistData;
-
-async function checkWhitelist() {
-    const address = document.getElementById('walletAddress').value;
-    const button = document.querySelector('.whitelist-checker button');
-    if (!address) {
-        alert('Please enter a wallet address.');
-        return;
-    }
-
-    const result = await checkWhitelistStatus(address, button);
-    if (result.isWhitelisted) {
-        alert('Congratulations! You are on the whitelist.');
-    } else {
-        alert('Sorry, you are not on the whitelist.');
-    }
-}
-
-// Make the function globally available
-window.checkWhitelist = checkWhitelist;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', async () => {
