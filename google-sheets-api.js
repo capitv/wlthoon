@@ -9,12 +9,18 @@ let cachedWhitelistData = null;
 let lastFetchTime = 0;
 
 // Get whitelist data with caching
-async function getWhitelistData() {
-    const now = Date.now();
-    if (cachedWhitelistData && (now - lastFetchTime < CACHE_DURATION)) {
-        return cachedWhitelistData;
+async function fetchWhitelistData() {
+    try {
+        const url = 'https://<your-vercel-project-url>/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`API error! status: ${response.status}`);
+        
+        const data = await response.json();
+        return processWhitelistData(data);
+    } catch (error) {
+        console.error('Error fetching whitelist data:', error);
+        return null;
     }
-    return await fetchWhitelistData();
 }
 
 // Fetch data from Google Sheets
