@@ -20,7 +20,7 @@ async function fetchWhitelistData() {
     }
 }
 
-// Get whitelist data with caching
+/// Get whitelist data with caching
 async function getWhitelistData() {
     const now = Date.now();
     if (cachedWhitelistData && (now - lastFetchTime < CACHE_DURATION)) {
