@@ -69,11 +69,22 @@ async function checkWhitelistStatus(address) {
         }
 
         const entry = data.find(e => e.address === normalizedAddress);
-        return {
+        const result = {
             isWhitelisted: !!entry,
             tier: entry?.tier || null,
             notes: entry?.notes || null
         };
+
+        if (result.isWhitelisted) {
+            // Trigger confetti effect
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        return result;
     } catch (error) {
         console.error('Error checking whitelist status:', error);
         return getDemoWhitelistStatus(address);
@@ -132,6 +143,24 @@ document.addEventListener('DOMContentLoaded', () => {
 window.checkWhitelistStatus = checkWhitelistStatus;
 window.getDemoWhitelistStatus = getDemoWhitelistStatus;
 window.getWhitelistData = getWhitelistData;
+
+async function checkWhitelist() {
+    const address = document.getElementById('walletAddress').value;
+    if (!address) {
+        alert('Please enter a wallet address.');
+        return;
+    }
+
+    const result = await checkWhitelistStatus(address);
+    if (result.isWhitelisted) {
+        alert('Congratulations! You are on the whitelist.');
+    } else {
+        alert('Sorry, you are not on the whitelist.');
+    }
+}
+
+// Make the function globally available
+window.checkWhitelist = checkWhitelist;
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', async () => {
