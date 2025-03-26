@@ -1,5 +1,8 @@
 // Constants
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0';
+const SHEET_NAME = 'Whitelist';
+const SHEET_RANGE = 'A:B';
+const CACHE_DURATION = 1 * 60 * 1000; // 1 minute
 
 // Cache variables
 let cachedWhitelistData = null;
@@ -8,7 +11,7 @@ let lastFetchTime = 0;
 // Fetch data from the API intermediary
 async function fetchWhitelistData() {
     try {
-        const url = 'https://berathoon-site-8hcygqn72-berwinthoons-projects.vercel.app/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
+        const url = 'https://berathoon-site-8hcygqn72-berwinthoons-projects.vercel.app/api/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
         const response = await fetch(url);
         if (!response.ok) throw new Error(`API error! status: ${response.status}`);
         
@@ -20,7 +23,7 @@ async function fetchWhitelistData() {
     }
 }
 
-/// Get whitelist data with caching
+// Get whitelist data with caching
 async function getWhitelistData() {
     const now = Date.now();
     if (cachedWhitelistData && (now - lastFetchTime < CACHE_DURATION)) {
