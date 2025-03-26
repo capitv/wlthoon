@@ -11,7 +11,7 @@ let lastFetchTime = 0;
 // Fetch data from the API intermediary
 async function fetchWhitelistData() {
     try {
-        const url = 'https://berathoon-site-8hcygqn72-berwinthoons-projects.vercel.app/api/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
+        const url = 'https://my-whitelist-proxy.vercel.app/api/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
         const response = await fetch(url);
         if (!response.ok) throw new Error(`API error! status: ${response.status}`);
         
