@@ -176,7 +176,8 @@ header.scrolled .logo-img {
 
 .hero-subtitle {
   font-size: 18px;
-  margin-bottom: 0;
+  margin-top: 0px !important;
+  margin-bottom: 11px;
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   max-width: 800px;
