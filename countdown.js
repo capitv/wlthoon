@@ -32,14 +32,13 @@ function updateCountdown() {
         countdownMinutes.textContent = String(minutes).padStart(2, '0');
         countdownSeconds.textContent = String(seconds).padStart(2, '0');
 
-        console.log(`Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`);
+
     } else {
         // Countdown has finished
         countdownDays.textContent = '00';
         countdownHours.textContent = '00';
         countdownMinutes.textContent = '00';
         countdownSeconds.textContent = '00';
-        console.log('Countdown finished!');
     }
 }
 
