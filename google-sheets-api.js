@@ -2,7 +2,7 @@
 const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0';
 const SHEET_NAME = 'Whitelist';
 const SHEET_RANGE = 'A:B';
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 1 * 60 * 1000; // 1 minute
 
 // Cache variables
 let cachedWhitelistData = null;
