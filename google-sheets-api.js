@@ -59,7 +59,7 @@ function processWhitelistData(data) {
 }
 
 // Check whitelist status
-async function checkWhitelistStatus(address) {
+async function checkWhitelistStatus(address, originElement) {
     try {
         const normalizedAddress = address.toLowerCase();
         const data = await getWhitelistData();
@@ -75,12 +75,19 @@ async function checkWhitelistStatus(address) {
             notes: entry?.notes || null
         };
 
-        if (result.isWhitelisted) {
-            // Trigger confetti effect
+        if (result.isWhitelisted && originElement) {
+            // Get the bounding rectangle of the origin element
+            const rect = originElement.getBoundingClientRect();
+            const origin = {
+                x: (rect.left + rect.right) / 2 / window.innerWidth,
+                y: (rect.top + rect.bottom) / 2 / window.innerHeight
+            };
+
+            // Trigger confetti effect at the origin element
             confetti({
                 particleCount: 100,
                 spread: 70,
-                origin: { y: 0.6 }
+                origin: origin
             });
         }
 
@@ -146,12 +153,13 @@ window.getWhitelistData = getWhitelistData;
 
 async function checkWhitelist() {
     const address = document.getElementById('walletAddress').value;
+    const button = document.querySelector('.whitelist-checker button');
     if (!address) {
         alert('Please enter a wallet address.');
         return;
     }
 
-    const result = await checkWhitelistStatus(address);
+    const result = await checkWhitelistStatus(address, button);
     if (result.isWhitelisted) {
         alert('Congratulations! You are on the whitelist.');
     } else {
