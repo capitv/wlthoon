@@ -1,14 +1,11 @@
 // Constants
-const SHEET_ID = '1xwXMrIABdaGFm6L3QBkDR_whW0H_Oe12Z0OCYPyn_t0';
-const SHEET_NAME = 'Whitelist';
-const SHEET_RANGE = 'A:B';
-const CACHE_DURATION = 1 * 60 * 1000; // 1 minute
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // Cache variables
 let cachedWhitelistData = null;
 let lastFetchTime = 0;
 
-// Get whitelist data with caching
+// Fetch data from the API intermediary
 async function fetchWhitelistData() {
     try {
         const url = 'https://<your-vercel-project-url>/whitelist'; // Substitua pelo URL da sua API intermediária no Vercel
@@ -23,24 +20,18 @@ async function fetchWhitelistData() {
     }
 }
 
-// Fetch data from Google Sheets
-async function fetchWhitelistData() {
-    try {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${SHEET_RANGE}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`API error! status: ${response.status}`);
-        
-        const text = await response.text();
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}') + 1;
-        const jsonText = text.substring(jsonStart, jsonEnd);
-        const data = JSON.parse(jsonText);
-        
-        return processWhitelistData(data);
-    } catch (error) {
-        console.error('Error fetching whitelist data:', error);
-        return null;
+// Get whitelist data with caching
+async function getWhitelistData() {
+    const now = Date.now();
+    if (cachedWhitelistData && (now - lastFetchTime < CACHE_DURATION)) {
+        return cachedWhitelistData;
     }
+    const data = await fetchWhitelistData();
+    if (data) {
+        cachedWhitelistData = data;
+        lastFetchTime = now;
+    }
+    return data;
 }
 
 // Process whitelist data
@@ -75,11 +66,22 @@ async function checkWhitelistStatus(address) {
         }
 
         const entry = data.find(e => e.address === normalizedAddress);
-        return {
+        const result = {
             isWhitelisted: !!entry,
             tier: entry?.tier || null,
             notes: entry?.notes || null
         };
+
+        if (result.isWhitelisted) {
+            // Trigger confetti effect
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        return result;
     } catch (error) {
         console.error('Error checking whitelist status:', error);
         return getDemoWhitelistStatus(address);
